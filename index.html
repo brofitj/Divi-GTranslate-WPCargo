@@ -1,0 +1,89 @@
+<div class="custom-gtranslate tbr_gtranslate">
+	<button id="gtranslate-toggle" class="dropdown-toggle">
+		<img src="/wp-content/plugins/gtranslate/flags/svg/en.svg" alt="EN" width="24" height="24"> 
+		<!-- EN -->
+	</button>
+	<div class="dropdown-menu">
+		[gtranslate]
+	</div>
+</div>
+
+<script>
+	document.addEventListener("DOMContentLoaded", function () {
+		const toggleButton = document.getElementById("gtranslate-toggle");
+		const dropdownContainer = document.querySelector(".custom-gtranslate.tbr_gtranslate");
+		const dropdownMenu = document.querySelector(".custom-gtranslate .dropdown-menu");
+		const flagImage = toggleButton.querySelector("img");
+		const gtranslateLinks = document.querySelectorAll(".custom-gtranslate .dropdown-menu .glink");
+
+		if (!toggleButton || !dropdownMenu || !flagImage || !gtranslateLinks.length) {
+			console.error("GTranslate elements are missing or not rendered correctly.");
+			return;
+		}
+
+		function updateToggleButton() {
+			const activeLink = document.querySelector(".glink.gt-current-lang");
+			if (activeLink) {
+				const activeFlag = activeLink.querySelector("img");
+				const activeLangText = activeLink.querySelector("span")?.textContent || "EN";
+
+				if (activeFlag) {
+					flagImage.setAttribute("src", activeFlag.getAttribute("src"));
+				}
+
+				// const spanElement = toggleButton.querySelector("span");
+				// if (spanElement) {
+				// 	spanElement.textContent = ` ${activeLangText}`;
+				// }
+			} else {
+				console.warn("No active language link found!");
+			}
+		}
+
+		updateToggleButton();
+
+		toggleButton.addEventListener("click", function (event) {
+			event.stopPropagation();
+			dropdownContainer.classList.toggle("show");
+		});
+
+		document.addEventListener("click", function () {
+			dropdownContainer.classList.remove("show");
+		});
+
+		gtranslateLinks.forEach(link => {
+			link.addEventListener("click", function (event) {
+				event.preventDefault();
+				const lang = this.getAttribute("data-gt-lang");
+
+				if (!lang) {
+					console.error("No language data found in clicked link.");
+					return;
+				}
+
+				const googleTranslateAnchor = document.querySelector(`.glink[data-gt-lang="${lang}"]`);
+				if (googleTranslateAnchor) {
+					googleTranslateAnchor.click();
+				}
+
+				setTimeout(updateToggleButton, 500);
+			});
+		});
+	});
+</script>
+
+<script>
+	document.addEventListener("DOMContentLoaded", function () {
+		const header = document.querySelector("body");
+		const stickyClass = "tbr_header__active";
+		const offset = 50;
+
+		window.addEventListener("scroll", function () {
+			if (window.scrollY > offset) {
+				header.classList.add(stickyClass);
+			} else {
+				header.classList.remove(stickyClass);
+			}
+		});
+	});
+</script>
